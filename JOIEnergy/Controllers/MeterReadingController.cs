@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using JOIEnergy.Domain;
+﻿using JOIEnergy.Domain;
 using JOIEnergy.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,32 +10,30 @@ namespace JOIEnergy.Controllers
     public class MeterReadingController : Controller
     {
         private readonly IMeterReadingService _meterReadingService;
+        private readonly IMeterReadingValidator _meterReadingValidator;
 
-        public MeterReadingController(IMeterReadingService meterReadingService)
+        public MeterReadingController(IMeterReadingService meterReadingService, IMeterReadingValidator meterReadingValidator)
         {
             _meterReadingService = meterReadingService;
+            _meterReadingValidator = meterReadingValidator;
         }
+
         // POST api/values
-        [HttpPost ("store")]
-        public ObjectResult Post([FromBody]MeterReadings meterReadings)
+        [HttpPost("store")]
+        public ObjectResult Post([FromBody] MeterReadings meterReadings)
         {
-            if (!IsMeterReadingsValid(meterReadings)) {
+            if (!_meterReadingValidator.IsMeterReadingsValid(meterReadings))
+            {
                 return new BadRequestObjectResult("Internal Server Error");
             }
-            _meterReadingService.StoreReadings(meterReadings.SmartMeterId,meterReadings.ElectricityReadings);
+
+            _meterReadingService.StoreReadings(meterReadings.SmartMeterId, meterReadings.ElectricityReadings);
             return new OkObjectResult("{}");
         }
 
-        private bool IsMeterReadingsValid(MeterReadings meterReadings)
-        {
-            String smartMeterId = meterReadings.SmartMeterId;
-            List<ElectricityReading> electricityReadings = meterReadings.ElectricityReadings;
-            return smartMeterId != null && smartMeterId.Any()
-                    && electricityReadings != null && electricityReadings.Any();
-        }
-
         [HttpGet("read/{smartMeterId}")]
-        public ObjectResult GetReading(string smartMeterId) {
+        public ObjectResult GetReading(string smartMeterId)
+        {
             return new OkObjectResult(_meterReadingService.GetReadings(smartMeterId));
         }
     }

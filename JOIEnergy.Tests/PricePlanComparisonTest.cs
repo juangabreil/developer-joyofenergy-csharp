@@ -16,7 +16,6 @@ namespace JOIEnergy.Tests
     {
         private MeterReadingService meterReadingService;
         private PricePlanComparatorController controller;
-        private Dictionary<string, Supplier> smartMeterToPricePlanAccounts = new Dictionary<string, Supplier>();
         private static String SMART_METER_ID = "smart-meter-id";
 
         public PricePlanComparisonTest()
@@ -29,8 +28,7 @@ namespace JOIEnergy.Tests
                 new PricePlan() { EnergySupplier = Supplier.PowerForEveryone, UnitRate = 1, PeakTimeMultiplier = NoMultipliers() } 
             };
             var pricePlanService = new PricePlanService(pricePlans, meterReadingService);
-            var accountService = new AccountService(smartMeterToPricePlanAccounts);
-            controller = new PricePlanComparatorController(pricePlanService, accountService);
+            controller = new PricePlanComparatorController(pricePlanService);
         }
 
         [Fact]
