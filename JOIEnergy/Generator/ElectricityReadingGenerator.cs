@@ -1,20 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using JOIEnergy.Domain;
+using JOIEnergy.Enums;
 
 namespace JOIEnergy.Generator
 {
-    public class ElectricityReadingGenerator
+    public static class ElectricityReadingGenerator
     {
-        public ElectricityReadingGenerator()
-        {
+        public static IDictionary<string, IList<ElectricityReading>> GenerateMeterElectricityReadings(IDictionary<string, Supplier> smartMeterToPricePlanAccounts) {
+            var smartMeterIds = smartMeterToPricePlanAccounts.Select(mtpp => mtpp.Key);
 
+            return smartMeterIds.ToDictionary<string, string, IList<ElectricityReading>>(
+                smartMeterId => smartMeterId, 
+                _ => ElectricityReadingGenerator.Generate(20)
+            );
         }
-        public List<ElectricityReading> Generate(int number)
+        
+        private static List<ElectricityReading> Generate(int number)
         {
             var readings = new List<ElectricityReading>();
             var random = new Random();
-            for (int i = 0; i < number; i++)
+            for (var i = 0; i < number; i++)
             {
                 var reading = (decimal)random.NextDouble();
                 var electricityReading = new ElectricityReading
