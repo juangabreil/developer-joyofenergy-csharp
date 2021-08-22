@@ -22,7 +22,7 @@ namespace JOIEnergy.Services
             return new List<ElectricityReading>();
         }
 
-        public void StoreReadings(string smartMeterId, IList<ElectricityReading> electricityReadings)
+        public void StoreReadings(string smartMeterId, IEnumerable<ElectricityReading> electricityReadings)
         {
             if (!_meterAssociatedReadings.ContainsKey(smartMeterId))
             {
