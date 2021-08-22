@@ -1,7 +1,7 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using JOIEnergy.Services;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -22,16 +22,10 @@ namespace JOIEnergy.Controllers
         {
             var costPerPricePlan =
                 _pricePlanService.GetConsumptionCostOfElectricityReadingsForEachPricePlan(smartMeterId);
-            if (!costPerPricePlan.Any())
-            {
-                return new NotFoundObjectResult($"Smart Meter ID ({smartMeterId}) not found");
-            }
-
-            dynamic response = JObject.FromObject(costPerPricePlan);
-
+            
             return
                 costPerPricePlan.Any()
-                    ? new ObjectResult(response)
+                    ? new ObjectResult(costPerPricePlan)
                     : new NotFoundObjectResult($"Smart Meter ID ({smartMeterId}) not found");
         }
 
@@ -46,11 +40,11 @@ namespace JOIEnergy.Controllers
                 return new NotFoundObjectResult($"Smart Meter ID ({smartMeterId}) not found");
             }
 
-            var recommendations = consumptionForPricePlans.OrderBy(pricePlanComparison => pricePlanComparison.Value).ToList();
+            IEnumerable<KeyValuePair<string, decimal>> recommendations = consumptionForPricePlans.OrderBy(pricePlanComparison => pricePlanComparison.Value);
 
-            if (limit.HasValue && limit.Value < recommendations.Count())
+            if (limit.HasValue)
             {
-                return new ObjectResult(recommendations.Take(limit.Value));
+                recommendations = recommendations.Take(limit.Value);
             }
 
             return new ObjectResult(recommendations);

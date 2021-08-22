@@ -3,7 +3,7 @@ using JOIEnergy.Domain;
 using JOIEnergy.Services;
 using Xunit;
 
-namespace JOIEnergy.Tests
+namespace JOIEnergy.Tests.Services
 {
     public class MeterReadingValidatorTest
     {
@@ -48,6 +48,12 @@ namespace JOIEnergy.Tests
             };
             
             Assert.False(_validator.IsMeterReadingsValid(readings));
+        }
+        
+        [Fact]
+        public void ShouldReturnFalseValidatingNullReadings()
+        {
+            Assert.False(_validator.IsMeterReadingsValid(null));
         }
         
         [Fact]

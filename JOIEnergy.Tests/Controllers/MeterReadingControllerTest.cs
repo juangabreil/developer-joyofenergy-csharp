@@ -5,7 +5,7 @@ using JOIEnergy.Services;
 using Moq;
 using Xunit;
 
-namespace JOIEnergy.Tests
+namespace JOIEnergy.Tests.Controllers
 {
     public class MeterReadingControllerTest
     {

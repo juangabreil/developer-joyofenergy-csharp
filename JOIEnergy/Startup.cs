@@ -30,7 +30,7 @@ namespace JOIEnergy
             var readings =
                 GenerateMeterElectricityReadings();
 
-            var pricePlans = new List<PricePlan> {
+            IList<PricePlan> pricePlans = new List<PricePlan> {
                 new PricePlan{
                     EnergySupplier = Enums.Supplier.DrEvilsDarkEnergy,
                     UnitRate = 10m,
@@ -53,9 +53,9 @@ namespace JOIEnergy
             services.AddTransient<IMeterReadingService, MeterReadingService>();
             services.AddTransient<IPricePlanService, PricePlanService>();
             services.AddSingleton<IMeterReadingValidator, MeterReadingValidator>();
-            services.AddSingleton((IServiceProvider arg) => readings);
-            services.AddSingleton((IServiceProvider arg) => pricePlans);
-            services.AddSingleton((IServiceProvider arg) => SmartMeterToPricePlanAccounts);
+            services.AddSingleton(readings);
+            services.AddSingleton(pricePlans);
+            services.AddSingleton(SmartMeterToPricePlanAccounts);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -69,8 +69,8 @@ namespace JOIEnergy
             app.UseMvc();
         }
 
-        private Dictionary<string, List<ElectricityReading>> GenerateMeterElectricityReadings() {
-            var readings = new Dictionary<string, List<ElectricityReading>>();
+        private IDictionary<string, IList<ElectricityReading>> GenerateMeterElectricityReadings() {
+            var readings = new Dictionary<string, IList<ElectricityReading>>();
             var generator = new ElectricityReadingGenerator();
             var smartMeterIds = SmartMeterToPricePlanAccounts.Select(mtpp => mtpp.Key);
 
@@ -81,7 +81,7 @@ namespace JOIEnergy
             return readings;
         }
 
-        public Dictionary<String, Supplier> SmartMeterToPricePlanAccounts
+        public IDictionary<String, Supplier> SmartMeterToPricePlanAccounts
         {
             get
             {

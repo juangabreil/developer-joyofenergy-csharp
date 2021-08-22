@@ -4,11 +4,11 @@ using JOIEnergy.Enums;
 
 namespace JOIEnergy.Services
 {
-    public class AccountService : Dictionary<string, Supplier>, IAccountService
+    public class AccountService : IAccountService
     { 
-        private Dictionary<string, Supplier> _smartMeterToPricePlanAccounts;
+        private readonly IDictionary<string, Supplier> _smartMeterToPricePlanAccounts;
 
-        public AccountService(Dictionary<string, Supplier> smartMeterToPricePlanAccounts) {
+        public AccountService(IDictionary<string, Supplier> smartMeterToPricePlanAccounts) {
             _smartMeterToPricePlanAccounts = smartMeterToPricePlanAccounts;
         }
 
